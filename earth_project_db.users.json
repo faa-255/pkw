@@ -1,0 +1,85 @@
+[{
+  "_id": {
+    "$oid": "694afa92e83164d06fec9544"
+  },
+  "name": "นางสาวภาวนา แง้มใจ",
+  "username": "jj",
+  "password": "$2a$10$AYucVkNz4Oa1NzAIz8SsBuwiztl.BUl115oyQEvoBTXGPYVSyjx2e",
+  "role": "student",
+  "createdAt": {
+    "$date": "2025-12-23T20:24:50.424Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T16:19:09.711Z"
+  },
+  "__v": 0,
+  "profileImage": "http://localhost:5000/uploads/1766679549710-923239039.jpg"
+},
+{
+  "_id": {
+    "$oid": "694afaafe83164d06fec9547"
+  },
+  "name": "นางสาวจักริน งามน้อย",
+  "username": "jjj",
+  "password": "$2a$10$4ZN0tNF8DqpHi7QsDskBDOX.YYFCnmg3scDOeV.PjuFGMT0qCz/4S",
+  "role": "student",
+  "createdAt": {
+    "$date": "2025-12-23T20:25:19.277Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T16:19:59.431Z"
+  },
+  "__v": 0,
+  "profileImage": "http://localhost:5000/uploads/1766679559169-78584659.jpg"
+},
+{
+  "_id": {
+    "$oid": "694afad8e83164d06fec954a"
+  },
+  "name": "นายมาวิน มารัก",
+  "username": "jjjj",
+  "password": "$2a$10$CXgVNPLgArfvI10iwG2O5O/ZL/1cOUmOjQ0LNsgSKAnbnGRp0KvA.",
+  "role": "student",
+  "createdAt": {
+    "$date": "2025-12-23T20:26:00.658Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T16:19:41.879Z"
+  },
+  "__v": 0,
+  "profileImage": "http://localhost:5000/uploads/1766679581875-367604095.jpg"
+},
+{
+  "_id": {
+    "$oid": "694c35e8372d9d456f5244a8"
+  },
+  "name": "นายสมรัก มาดี",
+  "username": "สมรัก",
+  "password": "$2a$10$lDMsiCM/Fk3Y.eDjhwp9xuk/WWnQh8jNs3X5IiKyV1aFZKt95ILpq",
+  "role": "teacher",
+  "createdAt": {
+    "$date": "2025-12-24T18:50:16.559Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:41:15.854Z"
+  },
+  "__v": 0,
+  "profileImage": "http://localhost:5000/uploads/1766679501782-116080273.jpg"
+},
+{
+  "_id": {
+    "$oid": "694d42417267629ade115af7"
+  },
+  "name": "admin",
+  "username": "admin",
+  "password": "$2a$10$jUv4zsz84hYUo4Q2VQssHOpRzYRHSLgWo9t031.2fSgdE72x6KOui",
+  "role": "admin",
+  "profileImage": "http://localhost:5000/uploads/1766683026408-30669227.jpg",
+  "createdAt": {
+    "$date": "2025-12-25T13:55:13.507Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:17:06.420Z"
+  },
+  "__v": 0
+}]
