@@ -2,11 +2,10 @@ const Project = require('../models/Project');
 const fs = require('fs');
 const path = require('path');
 
-// 1. เพิ่มโครงงาน (Create)
+// 1. เพิ่มโครงงาน
 exports.createProject = async (req, res) => {
     try {
         const { title, description, category, year } = req.body;
-        
         let fileData = {};
         if (req.file) {
             fileData = {
@@ -16,33 +15,30 @@ exports.createProject = async (req, res) => {
                 fileType: req.file.mimetype
             };
         }
-
         const newProject = await Project.create({
-            title,
-            description,
-            category,
-            year,
-            file: fileData,
-            owner: req.user.id // ✅ บันทึก ID คนสร้าง
+            title, description, category, year, file: fileData, owner: req.user.id
         });
-
         res.status(201).json(newProject);
     } catch (error) {
         res.status(500).json({ message: 'Error creating project', error: error.message });
     }
 };
 
-// 2. ดูข้อมูลทั้งหมด (Read All)
+// ✅ 2. ดูข้อมูลทั้งหมด (แก้ไขให้รองรับ userId)
 exports.getAllProjects = async (req, res) => {
     try {
-        const { search, category } = req.query;
+        // รับค่า userId เพิ่มเข้ามา
+        const { search, category, userId } = req.query; 
         let query = {};
 
         if (search) query.title = { $regex: search, $options: 'i' };
         if (category) query.category = category;
+        
+        // ✅ ถ้ามี userId ส่งมา ให้กรองเฉพาะเจ้าของคนนั้น
+        if (userId) query.owner = userId;
 
         const projects = await Project.find(query)
-            .populate('owner', 'name username role') // ✅ ดึงชื่อเจ้าของมาแสดง
+            .populate('owner', 'name username role profileImage') 
             .sort({ createdAt: -1 });
 
         res.json(projects);
@@ -51,55 +47,34 @@ exports.getAllProjects = async (req, res) => {
     }
 };
 
-// ✅ 3. ดูข้อมูลรายตัว (Read One) - *ส่วนที่ขาดไป*
-// ฟังก์ชันนี้จำเป็นสำหรับหน้า Edit เพื่อดึงข้อมูลเก่ามาแสดง
+// 3. ดูข้อมูลรายตัว
 exports.getProjectById = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id)
-            .populate('owner', 'name username role');
-            
-        if (!project) {
-            return res.status(404).json({ message: 'Project not found' });
-        }
-        
+            .populate('owner', 'name username role profileImage');
+        if (!project) return res.status(404).json({ message: 'Project not found' });
         res.json(project);
     } catch (error) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
 
-// 4. แก้ไขข้อมูล (Update)
+// 4. แก้ไขข้อมูล
 exports.updateProject = async (req, res) => {
     try {
         const { title, description, category, year } = req.body;
-        const projectId = req.params.id;
-
-        // 1. หาโครงงานก่อน
-        const project = await Project.findById(projectId);
+        const project = await Project.findById(req.params.id);
         if (!project) return res.status(404).json({ message: 'ไม่พบโครงงาน' });
 
-        // 2. เช็คสิทธิ์: ต้องเป็นเจ้าของเท่านั้น (อาจารย์แก้ไขไม่ได้)
-        if (project.owner.toString() !== req.user.id) {
-            return res.status(403).json({ message: 'คุณไม่มีสิทธิ์แก้ไขโครงงานนี้' });
+        if (req.user.role !== 'admin' && project.owner.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'ไม่มีสิทธิ์แก้ไข' });
         }
 
-        // 3. เตรียมข้อมูลที่จะแก้
-        let updateData = {
-            title,
-            description,
-            category,
-            year
-        };
-
-        // 4. ถ้ามีการอัปโหลดไฟล์ใหม่ ให้เปลี่ยนข้อมูลไฟล์ด้วย
+        let updateData = { title, description, category, year };
         if (req.file) {
-            // ลบไฟล์เก่าทิ้งเพื่อไม่ให้รก Server
             if (project.file && project.file.filePath) {
-                 fs.unlink(project.file.filePath, (err) => {
-                    if (err) console.error("Failed to delete old file:", err);
-                });
+                 fs.unlink(project.file.filePath, (err) => { if (err) console.error(err); });
             }
-
             updateData.file = {
                 fileName: req.file.filename,
                 filePath: req.file.path,
@@ -107,69 +82,41 @@ exports.updateProject = async (req, res) => {
                 fileType: req.file.mimetype
             };
         }
-
-        // 5. อัปเดตลง Database
-        const updatedProject = await Project.findByIdAndUpdate(
-            projectId, 
-            updateData, 
-            { new: true } // ให้ส่งค่าใหม่กลับไปแสดงผล
-        );
-
+        const updatedProject = await Project.findByIdAndUpdate(req.params.id, updateData, { new: true });
         res.json(updatedProject);
-
     } catch (error) {
-        res.status(500).json({ message: 'แก้ไขข้อมูลไม่สำเร็จ', error: error.message });
+        res.status(500).json({ message: 'แก้ไขไม่สำเร็จ', error: error.message });
     }
 };
+
+// 5. ดูสถิติ
 exports.getProjectStats = async (req, res) => {
     try {
-        const stats = await Project.aggregate([
-            {
-                $group: {
-                    _id: "$category", // จัดกลุ่มตามประเภท
-                    count: { $sum: 1 } // นับจำนวน
-                }
-            }
-        ]);
-        
-        // แปลงข้อมูลให้อยู่ในรูป { "IT": 5, "Science": 2 } เพื่อให้ใช้ง่าย
-        const statsObject = stats.reduce((acc, curr) => {
-            acc[curr._id] = curr.count;
-            return acc;
-        }, {});
-
+        const stats = await Project.aggregate([ { $group: { _id: "$category", count: { $sum: 1 } } } ]);
+        const statsObject = stats.reduce((acc, curr) => { acc[curr._id] = curr.count; return acc; }, {});
         res.json(statsObject);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching stats', error: error.message });
+        res.status(500).json({ message: 'Error stats' });
     }
 };
 
-// 5. ลบข้อมูล (Delete)
+// 6. ลบข้อมูล
 exports.deleteProject = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id);
         if (!project) return res.status(404).json({ message: 'Project not found' });
 
-        // ✅ กฎ: อาจารย์ (teacher) ห้ามลบ
-        if (req.user.role === 'teacher') {
-            return res.status(403).json({ message: 'อาจารย์ไม่สามารถลบโครงงานได้' });
+        if (req.user.role !== 'admin') {
+            if (req.user.role === 'teacher') return res.status(403).json({ message: 'อาจารย์ลบไม่ได้' });
+            if (project.owner.toString() !== req.user.id) return res.status(403).json({ message: 'ลบได้เฉพาะงานตัวเอง' });
         }
 
-        // ✅ กฎ: ต้องเป็นเจ้าของเท่านั้น ถึงลบได้
-        if (project.owner.toString() !== req.user.id) {
-            return res.status(403).json({ message: 'คุณลบได้เฉพาะงานของตัวเองเท่านั้น' });
-        }
-
-        // ลบไฟล์
         if (project.file && project.file.filePath) {
-            fs.unlink(project.file.filePath, (err) => {
-                if (err) console.error("Failed to delete file:", err);
-            });
+            fs.unlink(project.file.filePath, (err) => { if (err) console.error(err); });
         }
-
         await Project.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Project deleted successfully' });
+        res.json({ message: 'Deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting project' });
+        res.status(500).json({ message: 'Error deleting' });
     }
 };

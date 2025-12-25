@@ -9,7 +9,16 @@ import Submission from '../views/ProjectSubmission.vue';
 import ProjectEdit from '../views/ProjectEdit.vue';     // ✅ มีแล้ว
 import ProjectDetail from '../views/ProjectDetail.vue'; // ✅ เพิ่มอันนี้เข้ามา
 
+
+import AdminManage from '../views/AdminManage.vue'; // ✅ หน้าจัดการหลัก (Sidebar)
+import AdminUserAdd from '../views/AdminUserAdd.vue'; // ✅ หน้าเพิ่ม
+import AdminUserEdit from '../views/AdminUserEdit.vue'; // หน้าแก้ (มีอยู่แล้ว)
+
+
 const routes = [
+    { path: '/admin/manage', component: AdminManage, meta: { requiresAuth: true } },
+    { path: '/admin/user/add', component: AdminUserAdd, meta: { requiresAuth: true } },
+    { path: '/admin/user/edit/:id', component: AdminUserEdit, meta: { requiresAuth: true } },
     { 
         path: '/login', 
         component: Login 

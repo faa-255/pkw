@@ -1,8 +1,8 @@
 <template>
   <MainLayout>
-    <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100 mt-10">
+    <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-[#BFDBFE] mt-10">
       
-      <h2 class="text-2xl font-bold text-indigo-800 mb-6 flex items-center gap-2">
+      <h2 class="text-2xl font-bold text-[#1E3A8A] mb-6 flex items-center gap-2">
         {{ isEditMode ? '✏️ แก้ไขข้อมูลผู้ใช้งาน' : '➕ เพิ่มผู้ใช้งานใหม่' }}
       </h2>
 
@@ -11,11 +11,11 @@
         <div class="flex flex-col items-center mb-6">
            <div 
              @click="triggerFileInput" 
-             class="w-24 h-24 rounded-full bg-indigo-50 border-2 border-dashed border-indigo-300 flex items-center justify-center overflow-hidden relative group cursor-pointer hover:border-indigo-600 hover:bg-indigo-100 transition duration-300"
+             class="w-24 h-24 rounded-full bg-[#EFF6FF] border-2 border-dashed border-[#60A5FA] flex items-center justify-center overflow-hidden relative group cursor-pointer hover:border-[#2563EB] hover:bg-[#DBEAFE] transition duration-300"
            >
               <img v-if="newImagePreview" :src="newImagePreview" class="w-full h-full object-cover" />
               <img v-else-if="existingImageUrl" :src="existingImageUrl" class="w-full h-full object-cover" />
-              <span v-else class="text-3xl text-indigo-300 group-hover:scale-110 transition">👤</span>
+              <span v-else class="text-3xl text-[#93C5FD] group-hover:scale-110 transition">👤</span>
 
               <input 
                  ref="fileInputRef" 
@@ -28,18 +28,18 @@
 
            <p 
              @click="triggerFileInput" 
-             class="text-xs text-slate-500 mt-3 cursor-pointer hover:text-indigo-600 hover:underline transition"
+             class="text-xs text-gray-500 mt-3 cursor-pointer hover:text-[#2563EB] hover:underline transition"
            >
              {{ isEditMode ? 'คลิกเพื่อเปลี่ยนรูปโปรไฟล์' : 'คลิกเพื่ออัปโหลดรูปโปรไฟล์' }}
            </p>
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล</label>
+            <label class="block text-sm font-bold text-[#1E3A8A] mb-1">ชื่อ - นามสกุล</label>
             <input 
               v-model="form.name" 
               type="text" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#2563EB] focus:ring-2 focus:ring-[#BFDBFE] outline-none transition" 
               required 
               placeholder="เช่น ครูสมศรี ใจดี" 
             />
@@ -47,25 +47,25 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Username</label>
+                <label class="block text-sm font-bold text-[#1E3A8A] mb-1">Username</label>
                 <input 
                   v-model="form.username" 
                   type="text" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none disabled:bg-slate-100 disabled:text-slate-500" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#2563EB] focus:ring-2 focus:ring-[#BFDBFE] outline-none disabled:bg-gray-100 disabled:text-gray-500" 
                   :disabled="isEditMode" 
                   required 
                 />
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">
+                <label class="block text-sm font-bold text-[#1E3A8A] mb-1">
                     Password 
-                    <span v-if="isEditMode" class="text-xs font-normal text-slate-400">(เว้นว่างหากไม่เปลี่ยน)</span>
+                    <span v-if="isEditMode" class="text-xs font-normal text-gray-400">(เว้นว่างหากไม่เปลี่ยน)</span>
                 </label>
                 <input 
                   v-model="form.password" 
                   type="password" 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#2563EB] focus:ring-2 focus:ring-[#BFDBFE] outline-none" 
                   :required="!isEditMode" 
                   placeholder="••••••"
                 />
@@ -73,9 +73,9 @@
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">สถานะ (Role)</label>
+            <label class="block text-sm font-bold text-[#1E3A8A] mb-1">สถานะ (Role)</label>
             <div class="relative">
-                <select v-model="form.role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none bg-white appearance-none cursor-pointer">
+                <select v-model="form.role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-[#2563EB] focus:ring-2 focus:ring-[#BFDBFE] outline-none bg-white appearance-none cursor-pointer">
                     <option value="student">👨‍🎓 นักเรียน (Student)</option>
                     <option value="teacher">👨‍🏫 ครูที่ปรึกษา (Teacher)</option>
                     <option value="admin">🛠️ ผู้ดูแลระบบ (Admin)</option>
@@ -87,10 +87,10 @@
         </div>
 
         <div class="flex gap-3 pt-6">
-            <button type="submit" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+            <button type="submit" class="flex-1 bg-[#2563EB] text-white py-2.5 rounded-lg font-bold hover:bg-[#1D4ED8] shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
                 {{ isEditMode ? 'บันทึกการแก้ไข' : 'ยืนยันการเพิ่มข้อมูล' }}
             </button>
-            <router-link to="/admin/manage" class="px-6 py-2.5 border border-gray-300 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-800 font-bold transition">
+            <router-link to="/admin/manage" class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-[#1E3A8A] font-bold transition">
                 ยกเลิก
             </router-link>
         </div>
@@ -100,7 +100,6 @@
 </template>
 
 <script setup>
-// *** ส่วน Script เหมือนเดิม ไม่ต้องแก้ไข Logic ***
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from '../api/axiosClient';
