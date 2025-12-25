@@ -76,17 +76,27 @@ const isLoading = ref(false);
 const handleLogin = async () => {
   isLoading.value = true;
   
-  const success = await userStore.login({ 
-    username: form.username, 
-    password: form.password 
-  });
-  
-  isLoading.value = false;
+  try {
+    const success = await userStore.login({ 
+      username: form.username, 
+      password: form.password 
+    });
+    
+    console.log("Login Success:", success);
 
-  if (success) {
-    router.push('/'); 
-  } else {
-    alert('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง');
+    if (success) {
+      // **********************************************
+      // เช็คให้ชัวร์ว่าชื่อ Route ใน router/index.js คือชื่อนี้
+      // **********************************************
+      router.push('/project-dashboard'); 
+    } else {
+      alert('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
