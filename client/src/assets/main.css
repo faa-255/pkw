@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #F5F5F0; /* สีพื้นหลัง Earth Tone อ่อนๆ */
+  color: #5C4033;            /* สีตัวอักษรหลัก */
+  font-family: 'Sarabun', sans-serif; /* แนะนำให้ import font ใน index.html ด้วย */
+}
